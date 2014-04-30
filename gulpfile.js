@@ -93,7 +93,7 @@ gulp.task('build', ['clean', 'test', 'update-xqy'], function () {
   //   .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('release', ['build'], function () {
+gulp.task('release', ['build', 'tag'], function () {
   // build is complete, release the kraken!
 });
 
