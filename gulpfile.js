@@ -14,13 +14,11 @@ var gitinfo = require('gulp-gitinfo')
 var es   = require('event-stream')
 
 var xray = require('gulp-xray-runner')
+var argv = require('yargs').argv;
 
+var ml = argv.ml;
 var version = pkg.version;
 var lastCommit;
-
-gulp.task('one', function (cb) {
-  cb();
-});
 
 gulp.task('update-xqy', ['last-git-commit'], function (cb) {
   gulp.src(['src/_framework/*.xqy'])
@@ -40,17 +38,18 @@ gulp.task('last-git-commit', function() {
 })
 
 gulp.task('lint', function () {
+  console.log(argv.ml);
 });
 
 gulp.task('xray', function (cb) {
   var options = {
   /* https://github.com/mikeal/request#http-authentication */
     auth: {
-      username: 'admin',
-      password: 'secret',
+      username: ml.username,
+      password: ml.password,
       sendImmediately: false
     },
-    url: 'http://localhost:9300/_framework/lib/xray',
+    url: 'http://' + ml.host + ':' + ml.port + '/_framework/lib/xray',
     testDir: '_framework/test',
     files: ['_framework/test/**/*.xqy']
   };
