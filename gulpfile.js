@@ -38,7 +38,6 @@ gulp.task('last-git-commit', function() {
 })
 
 gulp.task('lint', function () {
-  console.log(argv.ml);
 });
 
 gulp.task('xray', function (cb) {
@@ -61,7 +60,7 @@ gulp.task('clean', function () {
     .pipe(clean());
 });
 
-gulp.task('tag', function () {
+gulp.task('tag', ['build'], function () {
   var pkg = require('./package.json');
   var v = 'v' + pkg.version;
   var message = 'Release ' + v;
@@ -84,7 +83,8 @@ gulp.task('npm', function (done) {
     .on('close', done);
 });
 
-gulp.task('build', ['clean', 'test', 'update-xqy'], function () {
+gulp.task('build', ['test', 'clean', 'update-xqy'], function (cb) {
+  cb();
   // return gulp.src('./src/contra.js')
   //   .pipe(gulp.dest('./dist'))
   //   .pipe(rename('contra.min.js'))
@@ -93,7 +93,7 @@ gulp.task('build', ['clean', 'test', 'update-xqy'], function () {
   //   .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('release', ['build', 'tag'], function () {
+gulp.task('release', ['build'], function () {
   // build is complete, release the kraken!
 });
 
