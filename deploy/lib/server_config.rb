@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###############################################################################
+require 'util'
 require 'uri'
 require 'net/http'
 require 'fileutils'
@@ -411,37 +412,23 @@ What is the version number of the target MarkLogic server? [4, 5, 6, or 7]'
   end
 
   def wipe
-    
-    if @environment != "local"
-      print "This command will remove the application, \n"
-      print "include the content database and all its content, from #{@hostname}.\n"
-      print "\nAre you ready to proceed? [y/N]\n"
-      confirm = gets.chomp
+    logger.info "Wiping MarkLogic setup for your project on #{@hostname}..."
+    setup = File.read(ServerConfig.expand_path("#{@@path}/lib/xquery/setup.xqy"))
+    r = execute_query %Q{#{setup} setup:do-wipe(#{get_config})}
+    logger.debug r.body
+
+    if r.body.match("<error:error")
+      logger.error r.body
+      logger.error "... Wipe FAILED"
+      return false
     else
-      confirm = 'yes'
-    end
-
-    if confirm.match(/^y(es)?$/i)
-      logger.info "Wiping MarkLogic setup for your project on #{@hostname}..."
-      setup = File.read(ServerConfig.expand_path("#{@@path}/lib/xquery/setup.xqy"))
-      r = execute_query %Q{#{setup} setup:do-wipe(#{get_config})}
-      logger.debug r.body
-
-      if r.body.match("<error:error")
-        logger.error r.body
-        logger.error "... Wipe FAILED"
-        return false
-      else
-        if r.body.match("(note: restart required)")
-          logger.warn "************************************"
-          logger.warn "*** RESTART OF MARKLOGIC IS REQUIRED"
-          logger.warn "************************************"
-        end
-        logger.info "... Wipe Complete"
-        return true
+      if r.body.match("(note: restart required)")
+        logger.warn "************************************"
+        logger.warn "*** RESTART OF MARKLOGIC IS REQUIRED"
+        logger.warn "************************************"
       end
-    else
-      puts "Aborting wipe command"
+      logger.info "... Wipe Complete"
+      return true
     end
   end
 
@@ -453,7 +440,12 @@ What is the version number of the target MarkLogic server? [4, 5, 6, or 7]'
       logger.info "code: #{r.code.to_i}"
       logger.info r.body
 
-      if r.body.match("<error:error")
+      if r.body.match('"result":"<error:error')
+        JSON.parse(r.body).each do |item|
+          logger.error item['result']
+        end
+        result = false
+      elsif r.body.match("<error:error")
         logger.error r.body
         result = false
       else
@@ -461,7 +453,14 @@ What is the version number of the target MarkLogic server? [4, 5, 6, or 7]'
         result = true
       end
     rescue Net::HTTPFatalError => e
-      logger.error e.response.body
+      if e.response.body.match('"result":"<error:error')
+        JSON.parse(e.response.body).each do |item|
+          logger.error item['result']
+        end
+        result = false
+      else
+        logger.error e.response.body
+      end
       logger.error "... Validation FAILED"
       result = false
     end
@@ -646,7 +645,8 @@ What is the version number of the target MarkLogic server? [4, 5, 6, or 7]'
   end
 
   def corb
-    connection_string = %Q{xcc://#{@properties['ml.user']}:#{@properties['ml.password']}@#{@properties['ml.server']}:#{@properties['ml.xcc-port']}/#{@properties['ml.content-db']}}
+    encoded_password = url_encode(@properties['ml.password'])
+    connection_string = %Q{xcc://#{@properties['ml.user']}:#{encoded_password}@#{@properties['ml.server']}:#{@properties['ml.xcc-port']}/#{@properties['ml.content-db']}}
     collection_name = find_arg(['--collection']) || '""'
     xquery_module = find_arg(['--modules'])
     uris_module = find_arg(['--uris']) || '""'
@@ -682,6 +682,73 @@ What is the version number of the target MarkLogic server? [4, 5, 6, or 7]'
       logger.info runme
       `#{runme}`
     end
+  end
+
+  def mlcp
+    mlcp_home = @properties['ml.mlcp-home']
+    if @properties['ml.mlcp-home'] == nil || ! File.directory?(File.expand_path(mlcp_home)) || ! File.exists?(File.expand_path("#{mlcp_home}/bin/mlcp.sh"))
+      raise "MLCP not found or mis-configured, please check the mlcp-home setting."
+    end
+
+    # Find all jars required for running MLCP. At least:
+    jars = Dir.glob(ServerConfig.expand_path("#{mlcp_home}/lib/*.jar"))
+    classpath = jars.join(path_separator)
+
+    ARGV.each do |arg|
+      if arg == "-option_file"
+        # remove flag from ARGV
+        index = ARGV.index(arg)
+        ARGV.slice!(index)
+
+        # capture and remove value from ARGV
+        option_file = ARGV[index]
+        ARGV.slice!(index)
+
+        # find and read file if exists
+        option_file = ServerConfig.expand_path("#{@@path}/#{option_file}")
+        if File.exist? option_file
+          logger.debug "Reading options file #{option_file}.."
+          options = File.read option_file
+
+          # substitute properties
+          @properties.sort {|x,y| y <=> x}.each do |k, v|
+            options.gsub!("@#{k}", v)
+          end
+
+          logger.debug "Options after resolving properties:"
+          lines = options.split(/[\n\r]+/).reject! { |line| line.empty? || line.match("^#") }
+
+          lines.each do |line|
+            logger.debug line
+          end
+
+          # and insert the properties back into ARGV
+          ARGV[index,0] = lines
+        else
+          raise "Option file #{option_file} not found."
+        end
+      end
+    end
+
+    if ARGV.length > 0
+      password_prompt
+      connection_string = %Q{ -username #{@properties['ml.user']} -password #{@ml_password} -host #{@properties['ml.server']} -port #{@properties['ml.xcc-port']}}
+
+      args = ARGV.join(" ")
+
+      runme = %Q{java -cp #{classpath} #{@properties['ml.mlcp-vmargs']} com.marklogic.contentpump.ContentPump #{args} #{connection_string}}
+    else
+      runme = %Q{java -cp #{classpath} com.marklogic.contentpump.ContentPump}
+    end
+
+    logger.debug runme
+    logger.info ""
+
+    system runme
+
+    logger.info ""
+
+    ARGV.clear
   end
 
   def credentials
@@ -722,40 +789,47 @@ What is the version number of the target MarkLogic server? [4, 5, 6, or 7]'
   end
 
   def capture
-
-    if @properties['ml.app-type'] != 'rest'
-      raise ExitException.new("This is a #{@properties['ml.app-type']} application; capture only works for app-type=rest")
-    end
-
+    full_config = find_arg(['--full-ml-config'])
     target_db = find_arg(['--modules-db'])
 
-    if target_db == nil
-      raise HelpException.new("capture", "modules-db is required")
+    # check params
+    if full_config == nil && target_db == nil
+      raise HelpException.new("capture", "either full-ml-config or modules-db is required")
+    elsif target_db != nil && @properties['ml.app-type'] != 'rest'
+      raise ExitException.new("This is a #{@properties['ml.app-type']} application; capture modules only works for app-type=rest")
     end
 
-    tmp_dir = Dir.mktmpdir
-    logger.debug "using temp dir " + tmp_dir
-    logger.info "Retrieving source and REST config from #{target_db}..."
-
-    save_files_to_fs(target_db, "#{tmp_dir}/src")
-
-    # set up the options
-    FileUtils.cp_r(
-      "#{tmp_dir}/src/#{@properties['ml.group']}/" + target_db.sub("-modules", "") + "/rest-api/.",
-      @properties['ml.rest-options.dir']
-    )
-    FileUtils.rm_rf("#{tmp_dir}/src/#{@properties['ml.group']}/")
-
-    # If we have an application/custom directory, we've probably done a capture
-    # before. Don't overwrite that directory. Kill the downloaded custom directory
-    # to avoid overwriting.
-    if Dir.exists? "#{@properties["ml.xquery.dir"]}/application/custom"
-      FileUtils.rm_rf("#{tmp_dir}/src/application/custom")
+    # retrieve full setup config from environment
+    if full_config != nil
+      capture_environment_config
     end
 
-    FileUtils.cp_r("#{tmp_dir}/src/.", @properties["ml.xquery.dir"])
+    # retrieve modules from selected database from environment
+    if target_db != nil
+      tmp_dir = Dir.mktmpdir
+      logger.debug "using temp dir " + tmp_dir
+      logger.info "Retrieving source and REST config from #{target_db}..."
 
-    FileUtils.rm_rf(tmp_dir)
+      save_files_to_fs(target_db, "#{tmp_dir}/src")
+
+      # set up the options
+      FileUtils.cp_r(
+        "#{tmp_dir}/src/#{@properties['ml.group']}/" + target_db.sub("-modules", "") + "/rest-api/.",
+        @properties['ml.rest-options.dir']
+      )
+      FileUtils.rm_rf("#{tmp_dir}/src/#{@properties['ml.group']}/")
+
+      # If we have an application/custom directory, we've probably done a capture
+      # before. Don't overwrite that directory. Kill the downloaded custom directory
+      # to avoid overwriting.
+      if Dir.exists? "#{@properties["ml.xquery.dir"]}/application/custom"
+        FileUtils.rm_rf("#{tmp_dir}/src/application/custom")
+      end
+
+      FileUtils.cp_r("#{tmp_dir}/src/.", @properties["ml.xquery.dir"])
+
+      FileUtils.rm_rf(tmp_dir)
+    end
   end
 
 private
@@ -812,6 +886,35 @@ private
       end
     end
 
+  end
+
+  # Note: this is the beginning of a feature; not really useful yet. What we want is to specify one or more app servers,
+  # get all configuration related to them, and write that into the ml-config.xml format. This format is very similar to
+  # MarkLogic's databases.xml and other config files, but there are some differences.
+  # The related configuration is to include any databases connected to the app server(s) -- modules, content, triggers,
+  # schemas; CPF configuration; along with users and roles. For users and roles, we probably need an interactive system --
+  # we don't want or need to capture built-in users and roles. If the application uses app-level security, then we
+  # could start with "Capture user #{default user}?" and then check on each role that user has.
+  def capture_environment_config
+    raise ExitException.new("Capture requires the target environment's hostname to be defined") unless @hostname.present?
+
+    logger.info "Capturing configuration of MarkLogic on #{@hostname}..."
+    setup = File.read(ServerConfig.expand_path("#{@@path}/lib/xquery/setup.xqy"))
+    r = execute_query %Q{#{setup} setup:get-configuration((), (), (), (), (), ())}
+
+    if r.body.match("error log")
+      logger.error r.body
+      logger.error "... Capture FAILED"
+      return false
+    else
+      JSON.parse(r.body).each do |item|
+        contents = item['result']
+        name = "#{@properties["ml.config.file"].sub( %r{.xml}, '' )}-#{@properties["ml.environment"]}.xml"
+        File.open(name, 'w') { |file| file.write(contents) }
+        logger.info("... Captured full configuration into #{name}")
+      end
+      return true
+    end
   end
 
   # Build an array of role/capability objects.
@@ -1500,6 +1603,8 @@ private
     properties.merge!(ServerConfig.load_properties(env_properties_file, "ml.")) if File.exists? env_properties_file
 
     properties = ServerConfig.substitute_properties(properties, properties, "ml.")
+
+    properties = load_prop_from_args(properties)
   end
 
 end
