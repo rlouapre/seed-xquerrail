@@ -16,9 +16,9 @@ module namespace main = "http://github.com/robwhitby/xray/main";
 declare private variable $test-docs :=
   <docs>
     <doc uri="one.xml">
-      <root><test>fab2175dfd03a98beb24d1ec09c9f003289a2223</test></root>
+      <root><test>13f285ada8c37ce7dcabcd6ce4d005bb8d3dbd75</test></root>
     </doc>
     <doc uri="two.xml">
-      <root><test>0.0.27</test></root>
+      <root><test>0.0.28</test></root>
     </doc>
   </docs>;
