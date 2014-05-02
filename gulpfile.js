@@ -76,15 +76,21 @@ gulp.task('clean', function () {
 // });
 
 gulp.task('tag1', ['build'], function () {
+  var options = {
+    // cwd: 'reports',
+    args: '-v'
+  };
   var pkg = require('./package.json');
   var v = 'v' + pkg.version;
   var message = 'Release ' + v;
 
   return gulp.src(['./*', '!node_modules/'])
-    .pipe(git.commit(message))
-    .pipe(git.tag(v, message))
-    .pipe(git.push('origin', 'master', '--tags'))
-    .pipe(gulp.dest('./'));
+    .pipe(git.commit(message, options))
+    .pipe(git.tag(v, message, {args: '-v'}/*, {}, cb*/))
+    // .pipe(git.push('origin', 'master', {args: '--tags'}))
+    // .end();
+    // .pipe(gulp.dest('./'));
+  // cb();
 });
 
 gulp.task('tag', ['build'], function (/*cb*/) {
