@@ -82,6 +82,8 @@
     </scheduled-tasks>
   </task-server>
 -->
+
+
   <http-servers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://marklogic.com/xdmp/group" xsi:schemaLocation="http://marklogic.com/xdmp/group group.xsd">
     <!--Default Application Server-->
     <http-server>
@@ -96,6 +98,20 @@
       <error-handler>@ml.error-handler</error-handler>
       <rewrite-resolves-globally>@ml.rewrite-resolves-globally</rewrite-resolves-globally>
       <!-- <ssl-certificate-template>@ml.ssl-certificate-template</ssl-certificate-template> -->
+
+      <module-locations>
+
+<!--         <module-location>
+  <namespace-uri>http://github.com/robwhitby/xray/assertions</namespace-uri>
+  <location>/_framework/lib/xray/src/assertions.xqy</location>
+</module-location>
+ -->
+        <module-location>
+          <namespace-uri>http://github.com/robwhitby/xray</namespace-uri>
+          <location>/_framework/lib/xray/src/xray.xqy</location>
+        </module-location>
+      </module-locations>
+
     </http-server>
     @ml.test-appserver
     @ml.rest-appserver
