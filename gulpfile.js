@@ -66,10 +66,10 @@ gulp.task('my', function () {
 
   return gulp.src(['./*', '!node_modules/'])
   // .pipe(gutil.log())
-    .pipe(git.commit(message, {args: '-v'}));
-    // .pipe(git.tag(v, message))
-    // .pipe(git.push('origin', 'master', '--tags'))
-    // .pipe(gulp.dest('./'));
+    .pipe(git.commit(message, {args: '-v'}))
+    .pipe(git.tag(v, message))
+    .pipe(git.push('origin', 'master', '--tags'))
+    .pipe(gulp.dest('./'));
 });
 
 gulp.task('tag', ['build'], function () {
