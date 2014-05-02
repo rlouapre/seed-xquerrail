@@ -69,9 +69,10 @@ gulp.task('my', function (cb) {
     .pipe(git.commit(message, {args: '-v'}))
     .pipe(git.tag(v, message, {}, cb))
     .pipe(git.push('origin', 'master', '--tags'))
-    .pipe(gulp.dest('./'));
+    .end();
+    // .pipe(gulp.dest('./'));
 
-  cb();
+  // cb();
 });
 
 gulp.task('tag', ['build'], function (/*cb*/) {
