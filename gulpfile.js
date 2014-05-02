@@ -74,14 +74,14 @@ gulp.task('my', function (cb) {
   cb();
 });
 
-gulp.task('tag', ['build'], function (cb) {
+gulp.task('tag', ['build'], function (/*cb*/) {
   var pkg = require('./package.json');
   var v = 'v' + pkg.version;
   var message = 'Release ' + v;
 
   return gulp.src(['./*', '!node_modules/'])
     .pipe(git.commit(message))
-    .pipe(git.tag(v, message, {}, cb))
+    .pipe(git.tag(v, message/*, {}, cb*/))
     .pipe(git.push('origin', 'master', '--tags'))
     .pipe(gulp.dest('./'));
   // cb();
