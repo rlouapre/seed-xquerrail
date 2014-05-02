@@ -31,7 +31,6 @@ gulp.task('update-xqy', ['last-git-commit'], function (cb) {
 gulp.task('last-git-commit', function() {
   return gitinfo()
     .pipe(es.map(function(data, cb) {
-      gutil.log(gutil.colors.cyan(JSON.stringify(data, null, 1)))
       lastCommit = data['\'local.branch.current.SHA,\' '];
       cb();
     }))
@@ -78,10 +77,10 @@ gulp.task('bump', function () {
     .pipe(gulp.dest('./'));
 });
 
-gulp.task('npm', function (done) {
-  require('child_process').spawn('npm', ['publish'], { stdio: 'inherit' })
-    .on('close', done);
-});
+// gulp.task('npm', function (done) {
+//   require('child_process').spawn('npm', ['publish'], { stdio: 'inherit' })
+//     .on('close', done);
+// });
 
 gulp.task('build', ['test', 'clean', 'update-xqy'], function (cb) {
   cb();
