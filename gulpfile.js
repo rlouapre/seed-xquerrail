@@ -77,8 +77,7 @@ gulp.task('clean', function () {
 
 gulp.task('tag1', ['build'], function () {
   var options = {
-    // cwd: 'reports',
-    args: '-v'
+    args: '--verbose'
   };
   var pkg = require('./package.json');
   var v = 'v' + pkg.version;
@@ -97,7 +96,6 @@ gulp.task('tag1', ['build'], function () {
 
 gulp.task('tag', ['build'], function (/*cb*/) {
   var options = {
-    cwd: 'reports',
     args: '-v'
   };
   var pkg = require('./package.json');
@@ -106,11 +104,10 @@ gulp.task('tag', ['build'], function (/*cb*/) {
 
   return gulp.src(['./*', '!node_modules/'])
     .pipe(git.commit(message, options))
-    .pipe(git.tag(v, message, options/*, {}, cb*/))
-    // .pipe(git.push('origin', 'master', {args: '--tags'}))
-    // .end();
-    // .pipe(gulp.dest('./'));
-  // cb();
+    .pipe(git.tag(v, message, 
+      git.push('origin', 'master', {args: '--tags'})
+      .end()
+    ));
 });
 
 gulp.task('bump', function () {
