@@ -103,12 +103,12 @@
 
 <!--         <module-location>
   <namespace-uri>http://github.com/robwhitby/xray/assertions</namespace-uri>
-  <location>/_framework/lib/xray/src/assertions.xqy</location>
+  <location>/main/_framework/lib/xray/src/assertions.xqy</location>
 </module-location>
  -->
         <module-location>
           <namespace-uri>http://github.com/robwhitby/xray</namespace-uri>
-          <location>/_framework/lib/xray/src/xray.xqy</location>
+          <location>/main/_framework/lib/xray/src/xray.xqy</location>
         </module-location>
       </module-locations>
 
