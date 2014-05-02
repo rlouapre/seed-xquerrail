@@ -79,12 +79,12 @@ gulp.task('tag', ['build'], function (cb) {
   var v = 'v' + pkg.version;
   var message = 'Release ' + v;
 
-  /*return*/ gulp.src(['./*', '!node_modules/'])
+  return gulp.src(['./*', '!node_modules/'])
     .pipe(git.commit(message))
     .pipe(git.tag(v, message, {}, cb))
     .pipe(git.push('origin', 'master', '--tags'))
     .pipe(gulp.dest('./'));
-  cb();
+  // cb();
 });
 
 gulp.task('bump', function () {
