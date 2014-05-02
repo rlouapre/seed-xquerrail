@@ -59,15 +59,15 @@ gulp.task('clean', function () {
     .pipe(clean());
 });
 
-gulp.task('my', function (cb) {
+gulp.task('my', function (/*cb*/) {
   var pkg = require('./package.json');
   var v = 'v' + pkg.version;
   var message = 'Release ' + v;
 
-  /*return*/ gulp.src(['./*', '!node_modules/'])
+  return gulp.src(['./*', '!node_modules/'])
   // .pipe(gutil.log())
     .pipe(git.commit(message, {args: '-v'}))
-    .pipe(git.tag(v, message, {}, cb))
+    .pipe(git.tag(v, message/*, {}, cb*/))
     .pipe(git.push('origin', 'master', '--tags'))
     .end();
     // .pipe(gulp.dest('./'));
