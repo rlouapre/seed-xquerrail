@@ -59,32 +59,49 @@ gulp.task('clean', function () {
     .pipe(clean());
 });
 
-gulp.task('my', function (/*cb*/) {
-  var pkg = require('./package.json');
-  var v = 'v' + pkg.version;
-  var message = 'Release ' + v;
+// gulp.task('my', function (/*cb*/) {
+//   var pkg = require('./package.json');
+//   var v = 'v' + pkg.version;
+//   var message = 'Release ' + v;
 
-  return gulp.src(['./*', '!node_modules/'])
-  // .pipe(gutil.log())
-    .pipe(git.commit(message, {args: '-v'}))
-    .pipe(git.tag(v, message/*, {}, cb*/))
-    .pipe(git.push('origin', 'master', '--tags'))
-    .end();
-    // .pipe(gulp.dest('./'));
+//   return gulp.src(['./*', '!node_modules/'])
+//   // .pipe(gutil.log())
+//     .pipe(git.commit(message, {args: '-v'}))
+//     .pipe(git.tag(v, message/*, {}, cb*/))
+//     .pipe(git.push('origin', 'master', '--tags'))
+//     .end();
+//     // .pipe(gulp.dest('./'));
 
-  // cb();
-});
+//   // cb();
+// });
 
-gulp.task('tag', ['build'], function (/*cb*/) {
+gulp.task('tag1', ['build'], function () {
   var pkg = require('./package.json');
   var v = 'v' + pkg.version;
   var message = 'Release ' + v;
 
   return gulp.src(['./*', '!node_modules/'])
     .pipe(git.commit(message))
-    .pipe(git.tag(v, message/*, {}, cb*/))
+    .pipe(git.tag(v, message))
     .pipe(git.push('origin', 'master', '--tags'))
     .pipe(gulp.dest('./'));
+});
+
+gulp.task('tag', ['build'], function (/*cb*/) {
+  var options = {
+    cwd: 'reports',
+    args: '-v'
+  };
+  var pkg = require('./package.json');
+  var v = 'v' + pkg.version;
+  var message = 'Release ' + v;
+
+  return gulp.src(['./*', '!node_modules/'])
+    .pipe(git.commit(message, options))
+    .pipe(git.tag(v, message, options/*, {}, cb*/))
+    // .pipe(git.push('origin', 'master', {args: '--tags'}))
+    // .end();
+    // .pipe(gulp.dest('./'));
   // cb();
 });
 
