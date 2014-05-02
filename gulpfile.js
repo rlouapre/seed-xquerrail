@@ -59,17 +59,19 @@ gulp.task('clean', function () {
     .pipe(clean());
 });
 
-gulp.task('my', function () {
+gulp.task('my', function (cb) {
   var pkg = require('./package.json');
   var v = 'v' + pkg.version;
   var message = 'Release ' + v;
 
-  return gulp.src(['./*', '!node_modules/'])
+  /*return*/ gulp.src(['./*', '!node_modules/'])
   // .pipe(gutil.log())
     .pipe(git.commit(message, {args: '-v'}))
-    .pipe(git.tag(v, message))
+    .pipe(git.tag(v, message, {}, cb))
     .pipe(git.push('origin', 'master', '--tags'))
     .pipe(gulp.dest('./'));
+
+  cb();
 });
 
 gulp.task('tag', ['build'], function () {
