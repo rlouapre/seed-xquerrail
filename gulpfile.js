@@ -11,19 +11,23 @@ var header = require('gulp-header');
 var git = require('gulp-git');
 var gitinfo = require('gulp-gitinfo')
 var es   = require('event-stream')
-
 var xray = require('gulp-xray-runner')
 var argv = require('yargs').argv;
 
-var ml = argv.ml;
+var ml;
+try {
+  ml = require('./ml.json')
+} catch (e) {
+  ml = argv.ml;
+}
 var version = pkg.version;
 var lastCommit;
 
 gulp.task('update-xqy', ['last-git-commit'], function (cb) {
-  gulp.src(['src/_framework/*.xqy'])
+  gulp.src(['src/main/**/*.xqy'])
     .pipe(header(fs.readFileSync('header.txt', 'utf8')))
     .pipe(template({version: version, lastcommit: lastCommit}))
-    .pipe(gulp.dest('./dist/src/_framework'));
+    .pipe(gulp.dest('./dist'));
   cb();
 });
 
@@ -35,20 +39,23 @@ gulp.task('last-git-commit', function() {
     }))
 })
 
+gulp.task('coverage', function () {
+});
+
 gulp.task('lint', function () {
 });
 
 gulp.task('xray', function (cb) {
   var options = {
-  /* https://github.com/mikeal/request#http-authentication */
+    /* https://github.com/mikeal/request#http-authentication */
     auth: {
       username: ml.username,
       password: ml.password,
       sendImmediately: false
     },
-    url: 'http://' + ml.host + ':' + ml.port + '/_framework/lib/xray',
-    testDir: '_framework/test',
-    files: ['_framework/test/**/*.xqy']
+    url: 'http://' + ml.host + ':' + ml.port + '/main/_framework/lib/xray',
+    testDir: 'test',
+    files: ['test/**/*.xqy']
   };
   xray(options, cb);
 });
@@ -99,5 +106,5 @@ gulp.task('release', ['build'], function () {
   // build is complete, release the kraken!
 });
 
-gulp.task('test', ['lint', 'xray']);
+gulp.task('test', ['coverage', 'lint', 'xray']);
 gulp.task('default', ['clean', 'test', 'build']);
