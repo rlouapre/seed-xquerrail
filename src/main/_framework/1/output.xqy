@@ -1,12 +1,6 @@
-(:
-Copyright 2014 MarkLogic Corporation
-
-XQuerrail - blabla
-:)
-
 xquery version "1.0-ml";
 
-module namespace output = "http://github.com/robwhitby/xray/output";
+module namespace output = "http://github.com/robwhitby/xray/1";
 
 (:
   optional setup function evaluated first
