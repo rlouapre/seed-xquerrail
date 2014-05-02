@@ -6,7 +6,6 @@ var pkg = require('./package.json');
 var rename = require('gulp-rename');
 var clean = require('gulp-clean');
 var bump = require('gulp-bump');
-// var replace = require('gulp-replace');
 var template = require('gulp-template');
 var header = require('gulp-header');
 var git = require('gulp-git');
@@ -57,41 +56,6 @@ gulp.task('xray', function (cb) {
 gulp.task('clean', function () {
   return gulp.src('./dist', { read: false })
     .pipe(clean());
-});
-
-// gulp.task('my', function (/*cb*/) {
-//   var pkg = require('./package.json');
-//   var v = 'v' + pkg.version;
-//   var message = 'Release ' + v;
-
-//   return gulp.src(['./*', '!node_modules/'])
-//   // .pipe(gutil.log())
-//     .pipe(git.commit(message, {args: '-v'}))
-//     .pipe(git.tag(v, message/*, {}, cb*/))
-//     .pipe(git.push('origin', 'master', '--tags'))
-//     .end();
-//     // .pipe(gulp.dest('./'));
-
-//   // cb();
-// });
-
-gulp.task('tag1', ['build'], function () {
-  var options = {
-    args: '--verbose'
-  };
-  var pkg = require('./package.json');
-  var v = 'v' + pkg.version;
-  var message = 'Release ' + v;
-
-  return gulp.src(['./*', '!node_modules/'])
-    .pipe(git.commit(message, options))
-    .pipe(git.tag(v, message, /*, {args: '-v'}, {}, cb*/
-      git.push('origin', 'master', {args: '--tags'}).end()
-      ))
-    // .pipe(git.push('origin', 'master', {args: '--tags'}))
-    // .end();
-    // .pipe(gulp.dest('./'));
-  // cb();
 });
 
 gulp.task('tag', ['build'], function (/*cb*/) {
