@@ -86,9 +86,11 @@ gulp.task('tag1', ['build'], function () {
 
   return gulp.src(['./*', '!node_modules/'])
     .pipe(git.commit(message, options))
-    .pipe(git.tag(v, message /*, {args: '-v'}, {}, cb*/))
-    .pipe(git.push('origin', 'master', {args: '--tags'}))
-    .end();
+    .pipe(git.tag(v, message, /*, {args: '-v'}, {}, cb*/
+      git.push('origin', 'master', {args: '--tags'})
+      ).end())
+    // .pipe(git.push('origin', 'master', {args: '--tags'}))
+    // .end();
     // .pipe(gulp.dest('./'));
   // cb();
 });
