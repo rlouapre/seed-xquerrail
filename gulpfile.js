@@ -49,7 +49,7 @@ gulp.task('xray', function (cb) {
   var options = {
     /* https://github.com/mikeal/request#http-authentication */
     auth: {
-      username: ml.username,
+      username: ml.user,
       password: ml.password,
       sendImmediately: false
     },
@@ -92,7 +92,7 @@ gulp.task('bump', function () {
 //     .on('close', done);
 // });
 
-gulp.task('build', ['test', 'clean', 'update-xqy'], function (cb) {
+gulp.task('build', ['clean', 'test', 'update-xqy'], function (cb) {
   cb();
   // return gulp.src('./src/contra.js')
   //   .pipe(gulp.dest('./dist'))

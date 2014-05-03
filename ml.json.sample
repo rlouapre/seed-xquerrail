@@ -1,5 +1,5 @@
 {
-  "username": "admin",
+  "user": "admin",
   "password": "secret",
   "host": "localhost",
   "port": 9300
