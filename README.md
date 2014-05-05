@@ -1,7 +1,6 @@
-seed-xquerrail
-==============
+# seed-xquerrail
 
-XQuerrail Seed Application
+XQuerrail Seed Application is used to generate and validate a Gulp build script for Xquery application.  
 
 Testing Build script
 
@@ -10,8 +9,11 @@ Testing Build script
 
 ## Gulp script
 This script will be used to build a release of the application located in dist directory.  
-It supports 4 arguments to access MarkLogic server:
+It will 4 arguments to access MarkLogic server:
+
 - ml.user, ml.password, ml.host, ml.port
+
+These argument could also be provided in ml.json file see (ml.json.sample for more details).
 
 Gulp script execute the following tasks:
 
@@ -40,5 +42,30 @@ Command line to build:
 ### Additional Gulp tasks available
 Few additional tasks are available useful to generated a new release of the application
 
-- bump: increase package version
 - tag: create a new tag and publish it in repository (git push can be executed from command line).
+- bump: increase package version
+
+## How to use it
+Create a new project install Roxy in root folder.  
+Create a new src directory and create a new npm project in src.  
+Execute:  
+
+```npm install https://github.com/rlouapre/seed-xquerrail/tarball/v{version} --save```
+
+package.json example:  
+```js
+{
+  "name": "test-seed-xquerrail",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "seed-xquerrail": "https://github.com/rlouapre/seed-xquerrail/tarball/v0.0.27"
+  }
+}
+```
