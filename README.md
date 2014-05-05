@@ -4,3 +4,41 @@ seed-xquerrail
 XQuerrail Seed Application
 
 Testing Build script
+
+- Source files must be located in src/main
+- Test files must be located in src/test
+
+## Gulp script
+This script will be used to build a release of the application located in dist directory.  
+It supports 4 arguments to access MarkLogic server:
+- ml.user, ml.password, ml.host, ml.port
+
+Gulp script execute the following tasks:
+
+### test
+Execute all test related tasks.
+
+  - coverage: not implemented.
+  - lint: not implemented.
+  - xray: execute xray test suite available in src/test
+
+### clean
+delete dist directory
+
+### update-xqy
+Update xquery files.
+
+  - last-git-commit: get last git commit hash 
+  - header: add license header to xqy files.
+  - replace: replace <%= lastcommit %> and <%= version %> last git hash and version
+  - copy: copy to dist directory
+
+Command line to build:  
+
+```gulp build --ml.user=admin --ml.password=xxxx --ml.host=ps7.demo.marklogic.com --ml.port=8050```
+
+### Additional Gulp tasks available
+Few additional tasks are available useful to generated a new release of the application
+
+- bump: increase package version
+- tag: create a new tag and publish it in repository (git push can be executed from command line).
