@@ -23,12 +23,11 @@ try {
 var version = pkg.version;
 var lastCommit;
 
-gulp.task('update-xqy', ['last-git-commit'], function (/*cb*/) {
+gulp.task('update-xqy', ['last-git-commit'], function () {
   return gulp.src(['src/main/**/*.xqy'])
     .pipe(header(fs.readFileSync('header.txt', 'utf8')))
     .pipe(template({version: version, lastcommit: lastCommit}))
     .pipe(gulp.dest('./dist'));
-  // cb();
 });
 
 gulp.task('last-git-commit', function() {
