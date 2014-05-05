@@ -23,12 +23,12 @@ try {
 var version = pkg.version;
 var lastCommit;
 
-gulp.task('update-xqy', ['last-git-commit'], function (cb) {
-  gulp.src(['src/main/**/*.xqy'])
+gulp.task('update-xqy', ['last-git-commit'], function (/*cb*/) {
+  return gulp.src(['src/main/**/*.xqy'])
     .pipe(header(fs.readFileSync('header.txt', 'utf8')))
     .pipe(template({version: version, lastcommit: lastCommit}))
     .pipe(gulp.dest('./dist'));
-  cb();
+  // cb();
 });
 
 gulp.task('last-git-commit', function() {
@@ -92,7 +92,7 @@ gulp.task('bump', function () {
 //     .on('close', done);
 // });
 
-gulp.task('build', ['clean', 'test', 'update-xqy'], function (cb) {
+gulp.task('build', ['test', 'clean', 'update-xqy'], function (cb) {
   cb();
   // return gulp.src('./src/contra.js')
   //   .pipe(gulp.dest('./dist'))
@@ -107,4 +107,4 @@ gulp.task('release', ['build'], function () {
 });
 
 gulp.task('test', ['coverage', 'lint', 'xray']);
-gulp.task('default', ['clean', 'test', 'build']);
+gulp.task('default', ['test', 'clean', 'build']);
