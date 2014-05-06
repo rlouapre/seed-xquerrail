@@ -4,14 +4,14 @@ XQuerrail Seed Application is used to generate and validate a Gulp build script 
 
 Testing Build script
 
-- Source files must be located in src/main
-- Test files must be located in src/test
+- Source files must be located in ```src/main```
+- Test files must be located in ```src/test```
 
 ## Gulp script
 This script will be used to build a release of the application located in dist directory.  
 It will 4 arguments to access MarkLogic server:
 
-- ml.user, ml.password, ml.host, ml.port
+- ```ml.user```, ```ml.password```, ```ml.host```, ```ml.port```
 
 These argument could also be provided in ml.json file see (ml.json.sample for more details).
 
@@ -40,9 +40,9 @@ Command line to build:
 ```gulp build --ml.user=admin --ml.password=xxxx --ml.host=ps7.demo.marklogic.com --ml.port=8050```
 
 ### Additional Gulp tasks available
-Few additional tasks are available useful to generated a new release of the application
+Few additional tasks are available useful to generate a new release of the application
 
-- tag: create a new tag and publish it in repository (git push can be executed from command line).
+- tag: create a new tag and publish it in repository
 - bump: increase package version
 
 ## How to use it
