@@ -1,0 +1,5 @@
+<config xmlns="http://xquerrail.com/config">   
+    <scope context="*">
+        <allow-role>*</allow-role>
+    </scope>
+</config>

@@ -1,0 +1,14 @@
+{
+  "name": "seed-xquerrail",
+  "version": "0.0.1",
+  "description": "XQuerrail Seed",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "xquerrail2.framework": "https://github.com/nativelogix/xquerrail2.framework/tarball/v0.0.2"
+  }
+}

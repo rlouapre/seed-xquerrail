@@ -1,0 +1,53 @@
+<config xmlns="http://xquerrail.com/config"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xquerrail.com/domain https://raw.githubusercontent.com/nativelogix/xquerrail2.framework/master/src/main/_framework/schemas/config.xsd"
+    >
+  <!--Configurations-->
+  <anonymous-user value="seed-xquerrail-user"/>
+
+  <!--Routing Module and Configuration-->
+  <routes-module resource="routing.xqy"/>
+
+  <base-view-directory value="/main/app/views/base/"/>
+
+  <default-application value="app"/>
+
+  <engine-extension resource="/main/_extensions/engine.extension.xqy"/>
+
+  <!--Register Your Application(s) Here-->
+  <application name="app" namespace="http://xquerrail.com/app" uri="/main/app">
+    <domain resource="domains/application-domain.xml" />
+    <script-directory value="resources/js"/>
+    <stylesheet-directory value="resources/css"/>
+    <extension-directory value="extensions"/>
+  </application>
+
+  <!--Interceptors-->
+<!-- TODO: Not sure if @config location si currently used maybe duplicated with interceptor-moculde/@resource -->
+<!--    <interceptors config="/main/_config/interceptor.xml">-->
+  <interceptors>
+    <interceptor
+      name="ml-security"
+      resource="ml-security.xml"
+      before-request="false"
+      after-request="true"
+      before-response="false"
+      after-response="false"
+    />
+    <interceptor
+      name="compressor"
+      resource="compressor.xml"
+      before-request="false"
+      after-request="false"
+      before-response="false"
+      after-response="true"
+    />
+  </interceptors>
+
+  <properties>
+    <property name="resource-path" resource="js"/>
+    <property name="css-path" resource="css"/>
+    <property name="js-path"  resource="js"/>
+  </properties>
+
+</config>

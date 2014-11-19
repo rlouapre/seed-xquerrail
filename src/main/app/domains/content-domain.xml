@@ -1,0 +1,237 @@
+<domain xmlns="http://xquerrail.com/domain"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xquerrail.com/domain https://raw.githubusercontent.com/nativelogix/xquerrail2.framework/master/src/main/_framework/schemas/domain.xsd">
+
+  <!-- Geographic Related Models -->
+  <model name="countryCode" label="Country Code" description="Country Code Controlled Vocabulary" persistence="document" key="uuid" keyLabel="name" extends="base">
+    <document root="countryCodes">/codetables/countryCodes.xml</document>
+    <element name="id" type="string" label="ISO Country Code">
+      <navigation  searchable="true" sortable="true" facetable="true"  />
+      <constraint unique="true" required="true" minLength="2" maxLength="2"  />
+    </element>
+    <element name="name" type="string" label="Name" >
+      <navigation searchable="true" sortable="true" facetable="true"  />
+      <constraint required="true"  />
+    </element>
+    <element name="ISO3" type="string" label="ISO 3">
+      <navigation  searchable="true" sortable="true" />
+      <constraint required="true" maxLength="3" minLength="3" />
+    </element>
+  </model>
+
+  <model name="timezone" description="Timezones Configuration" persistence="document" key="uuid" keyLabel="name" extends="base" label="Time Zone">
+    <document root="timezones">/codetables/timezones.xml</document>
+    <element name="id" type="string" label="ID">
+      <navigation searchable="true" sortable="true" facetable="true"/>
+      <constraint required="true"/>
+    </element>
+    <element name="offset" type="decimal" label="GMT Offset">
+      <navigation searchable="true" sortable="true" facetable="true"/>
+      <constraint required="true"/>
+    </element>
+    <element name="name" type="string" label="Name">
+      <navigation searchable="true" sortable="true"/>
+      <constraint required="true"/>
+    </element>
+  </model>
+
+  <model name="locale" description="Locales" persistence="document" key="id" keyLabel="name" label="Locale">
+    <document root="locales">/codetables/locales.xml</document>
+    <element name="id" type="string" identity="true" label="ID">
+      <navigation searchable="true" sortable="true" facetable="true"/>
+      <constraint required="true"/>
+    </element>
+    <element name="name" type="string" label="Name" default="">
+      <navigation searchable="true" sortable="true"/>
+      <constraint required="true"/>
+    </element>
+  </model>
+
+  <model name="user" description="User" persistence="directory" key="userId" keyLabel="userName" label="User" extends="base">
+    <directory>/users/</directory>
+    <element name="userId" type="string" label="UserId">
+      <navigation searchable="true" sortable="true" facetable="true"/>
+      <constraint required="true"/>
+    </element>
+    <element name="userName" type="string" label="User Name">
+      <navigation searchable="true" sortable="true"/>
+      <constraint  required="true"/>
+    </element>
+    <element name="fullName" type="string" label="Full Name" >
+      <navigation searchable="true" sortable="true"/>
+      <constraint  required="true"/>
+    </element>
+    <element name="emailAddress" type="string" label="Email Address">
+      <navigation searchable="true" sortable="true"/>
+      <constraint  required="true"/>
+    </element>
+    <element name="roles" type="reference" reference="model:role:reference" occurrence="*" label="Roles">
+      <navigation searchable="true" sortable="true" editable="true"/>
+      <constraint  required="true"/>
+    </element>
+  </model>
+
+    <model name="role" description="Roles" persistence="directory" label="Roles" key="uuid" keyLabel="roleName" extends="base">
+        <directory>/roles/</directory>
+        <element name="roleId" type="string" label="Role ID">
+            <navigation searchable="true" sortable="true" facetable="true"/>
+            <constraint required="true"/>
+        </element>
+        <element name="roleName" type="string" label="Role Name">
+            <navigation searchable="true" sortable="true" />
+            <constraint  required="true" />
+        </element>
+        <element name="roleDescription" type="string" label="Role Description">
+            <navigation searchable="true" sortable="true"/>
+            <constraint  required="true"/>
+        </element>
+        <element name="roleType" type="string" label="Role Type">
+            <navigation searchable="true" sortable="true"/>
+            <constraint required="true" inList="roleTypes"/>
+        </element>
+    </model>
+
+    <model name="blog" label="Blog" description="A blog"
+        persistence="directory" key="uuid" keyLabel="id" extends="base">
+        <directory>/blogs/</directory>
+        <element name="id" type="string" label="Blog ID">
+            <navigation editable="false" searchable="true" sortable="true" facetable="true" />
+            <constraint required="true"  />
+        </element>
+        <element name="title" type="string" label="Title" >
+            <navigation searchable="true" sortable="true"  />
+            <constraint required="true" />
+        </element>
+        <element name="url" type="anyURI" label="Url" >
+            <navigation searchable="true" sortable="true"  />
+            <constraint required="true" />
+        </element>
+        <element name="default" type="boolean" label="Default Blog">
+
+        </element>
+    </model>
+
+    <model name="blogPost" label="Post" description="Blog Post"
+        persistence="directory" key="uuid" keyLabel="blogId" extends="base">
+        <directory>/postings/</directory>
+        <element name="blogId" type="reference" reference="model:blog:reference" label="Blog">
+            <navigation  searchable="true" sortable="true"  />
+            <constraint required="true" />
+        </element>
+        <element name="status" type="reference" reference="model:postStatus:reference" label="Status">
+
+        </element>
+        <element name="publish" type="boolean" label="Publish" occurrence="1">
+
+        </element>
+        <element name="tags" type="string" label="Tags" occurrence="*">
+            <ui repeatable="true"/>
+        </element>
+
+        <element name="title" type="string" label="ID of the posting">
+            <navigation searchable="true" sortable="true" facetable="true" />
+            <constraint required="true"  />
+        </element>
+        <element name="comment" type="schema-element" label="Comment" >
+            <navigation searchable="true" sortable="true"   />
+            <constraint required="true"  />
+            <ui type="html-editor">
+            </ui>
+        </element>
+        <element name="excerpt" type="schema-element" label="Excerpt" >
+            <navigation searchable="true" sortable="true"   />
+            <constraint required="true"  />
+            <ui type="html-editor">
+            </ui>
+        </element>
+    </model>
+    <model name="postStatus" persistence="document" label="Post Status" extends="base" key="uuid" keyLabel="statusCode">
+        <document root="postStatuses">/config/postStatus.xml</document>
+        <element name="statusCode" type="string" label="Status Code">
+            <constraint required="true" unique="true"/>
+        </element>
+
+    </model>
+    <model name="document" key="uuid" keyLabel="title" persistence="directory" label="Document" extends="base">
+        <directory>/docs/</directory>
+        <element name="link" type="string" label="Link"></element>
+        <element name="header" type="string" label="Header Before"></element>
+        <element name="order" type="integer" label="List Order"></element>
+        <element name="title" type="string" label="Title"></element>
+        <element name="body" type="schema-element" label="Body">
+            <ui type="html-editor" class="prettyprint"/>
+        </element>
+    </model>
+    <model name="apidoc" key="uuid" keyLabel="title" persistence="directory" label="Document" extends="base">
+        <directory>/apidocs/</directory>
+        <element name="app"  type="string" label="Application"></element>
+        <element name="link" type="string" label="Link"></element>
+        <element name="header" type="string" label="Header Before"></element>
+        <element name="order" type="integer" label="List Order"></element>
+        <element name="title" type="string" label="Title"></element>
+        <element name="location" type="string" label="Location"></element>
+        <element name="namespace" type="string" label="Namespace"></element>
+        <element name="moduleType" type="string" label="Module Type"></element>
+        <element name="xqdoc" type="schema-element" label="Documentation">
+            <navigation listable="false"/>
+            <ui type="textarea" class="prettyprint"/>
+        </element>
+    </model>
+
+
+
+
+
+    <model name="allFormItems" key="id" keyLabel="id"  persistence="document">
+        <document root="allFormList">/samples/allFormList.xml</document>
+        <element name="id" type="string" identity="true" label="Identity Field">
+
+        </element>
+        <element name="create-timestamp" type="create-timestamp" label="create-timestamp"></element>
+        <element name="string" type="string" label="string"></element>
+        <element name="integer" type="integer" label="integer"></element>
+        <element name="long" type="long" label="long"></element>
+        <element name="decimal" type="decimal" label="decimal"></element>
+        <element name="boolean" type="boolean" label="boolean"></element>
+        <element name="date" type="date" label="date"></element>
+        <element name="dateTime" type="dateTime" label="dateTime"></element>
+        <element name="time" type="time" label="time"></element>
+        <element name="reference" type="reference" reference="model:countryCode:reference" label="reference(countryCode)"></element>
+        <element name="optionlist" type="string" label="optionlist(string)">
+            <constraint inList="possibleValues"/>
+        </element>
+        <element name="schema-element" type="schema-element" label="schema-element">
+
+        </element>
+        <element name="binary" type="binary" fileType="xml" fileURI="/allFormItems/binaries" label="binary(xml)">
+           <navigation listable="false"/>
+        </element>
+        <optionlist name="possibleValues" type="string">
+            <option label="(empty)"></option>
+            <option label="value1">value1</option>
+            <option label="value2">value2</option>
+        </optionlist>
+    </model>
+    <!--Option List-->
+    <optionlist name="roleTypes" child-element="roleType" type="string">
+        <option label="none"></option>
+        <option label="admin" >admin</option>
+        <option label="blog-reader">blog-reader</option>
+        <option label="blog-editor">blog-editor</option>
+        <option label="blog-admin">blog-admin</option>
+    </optionlist>
+
+    <!-- Geographic Related Controllers -->
+
+    <controller name="countryCodes" model="countryCode" label="Country Codes" class="lookup"/>
+    <controller name="timezones" model="timezone" label="Time Zones" class="lookup"/>
+    <controller name="locales" model="locale" label="Locales" class="lookup"/>
+    <controller name="blogs" model="blog" label="Blog" class="blog"/>
+    <controller name="posts" model="blogPost" label="Blog Post" class="blog"/>
+    <controller name="postStatus" model="postStatus" label="Post Status"/>
+    <controller name="users" model="user" label="Users" class="security"/>
+    <controller name="roles" model="role" label="Roles" class="security"/>
+    <controller name="docs" model="document" label="Documentation" class="docs"/>
+    <controller name="api" model="apidoc" label="API" class="api"/>
+
+</domain>

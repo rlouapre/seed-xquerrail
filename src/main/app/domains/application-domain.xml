@@ -1,0 +1,28 @@
+<domain xmlns="http://xquerrail.com/domain"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xquerrail.com/domain https://raw.githubusercontent.com/nativelogix/xquerrail2.framework/master/src/main/_framework/schemas/domain.xsd">
+  <name>app</name>
+  <content-namespace prefix="app" namespace-uri="http://xquerrail.com/app"/>
+  <application-namespace prefix="xquerrail" namespace-uri="http://xquerrail.com/app"/>
+  <default-collation>http://marklogic.com/collation/codepoint</default-collation>
+  <navigation listable="true" />
+  <import id="content" resource="content-domain.xml"/>
+  <permission role="seed-xquerrail-role" read="true" update="true" insert="true" execute="true"/>
+  <language>en</language>
+  
+  <!--Implement a base class to inherit metadata-->
+  <model name="base" description="Base Extension Class" persistence="abstract">
+    <element name="uuid" type="identity" identity="true" label="Globally Unique Identifier">
+      <navigation  searchable="true" sortable="true" facetable="true" />
+      <constraint />
+      <ui type="hidden" colWidth="0"/>
+    </element>
+    <element name="create-user" type="create-user" label="Created User">
+      <ui type="hidden" colWidth="0"/>
+    </element>
+    <element name="created" type="create-timestamp" label="Created Date">
+      <ui type="hidden" colWidth="0"/>
+    </element>
+  </model>
+
+</domain>

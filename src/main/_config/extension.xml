@@ -1,0 +1,5 @@
+<config 
+    xmlns="http://xquerrail.com/config"
+	xmlns:extension="http://xquerrail.com/extension">
+	<extension:extension name="childList" namespace="http://xquerrail.com/extension/childList" filename="childList-extension.xqy"/>
+</config>

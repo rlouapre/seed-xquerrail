@@ -1,0 +1,52 @@
+<routes xmlns="http://xquerrail.com/routing"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://xquerrail.com/routing file:../main/xquerrail2/_framework/schemas/routing.xsd">
+   <!--Define Resources Before Controllers-->
+  <route id="_favicon" pattern="/favicon.ico" is-resource="true">
+    <prepend>/main/resources/</prepend>
+  </route>
+
+  <route id="_resources" pattern="^/resources/*" is-resource="true">
+    <prepend>/main</prepend>
+  </route>
+
+ <route id="application_resources" pattern="/(\i\c*)/resources/*" is-resource="true">
+ </route>
+
+  <route id="initialize" pattern="^/initialize(.xqy)?$" is-resource="true">
+    <to>/main/node_modules/xquerrail2.framework/dist/_framework/initialize.xqy</to>
+  </route>
+  <route id="xray_index" pattern="^/xray/?$" is-resource="true">
+    <to>/xray/index.xqy</to>
+  </route>
+
+  <route id="app_index" pattern="^/$">
+    <default key="_controller">app:default:index:html</default>
+  </route>
+
+  <route id="app_login" pattern="^/login\.(html|xml|json)?">
+    <default key="_controller">app:default:login:$1</default>
+  </route>
+
+  <route id="app_logout" pattern="^/logout\.(html|xml|json)?">
+    <default key="_controller">app:default:logout:$1</default>
+  </route>
+
+  <!--Default Routes-->
+  <route id="default_index" pattern="^/(\i\c*[^/])/?$">
+    <default key="_controller">app:$1:index:html</default>
+  </route>
+
+  <route id="rest_controller" pattern="^/api/(\i\c*[^/])\.(xml|json)$" method="patch">
+    <default key="_controller">app:$1:patch:json</default>
+  </route>
+
+  <route id="default_controller_action_format" pattern="^/(\i\c*[^/])/(\i\c*)\.(html|xml|json)$">
+    <default key="_controller">app:$1:$2:$3</default>
+  </route>
+
+  <route id="default_controller_action" pattern="^/(\i\c*[^/])/(\i\c*)$">
+    <default key="_controller">app:$1:$2:html</default>
+  </route>
+
+</routes>
