@@ -1,0 +1,52 @@
+{
+  "name": "resources",
+  "version": "0.0.0",
+  "authors": [
+    "Richard Louapre <richard.louapre@marklogic.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "1.9.1",
+    "jquery-ui": "1.9.2",
+    "angular": "1.2.26",
+    "x2js": "*",
+    "lodash": "~2.4.1",
+    "modernizr": "2.6.2",
+    "jquery.validation": "1.11.1",
+    "bootstrap": "~3.2.0",
+    "bootstrap-datepicker": "1.2.0",
+    "bootstrap-timepicker": "0.2.6",
+    "bootstrap-wysihtml5": "*",
+    "bootstrap-duallistbox": "3.0.1",
+    "angular-animate": "1.2.26",
+    "angular-bootstrap": "0.11.0",
+    "angular-wizard": "0.2.2",
+    "bootstrap-select": "1.5.2",
+    "ngprogress": "~1.0.4",
+    "angular-bootstrap-duallistbox": "~0.0.2",
+    "angular-grid": "2.0.11",
+    "angular-bootstrap-grid-tree": "https://github.com/okigan/tree-grid-directive.git",
+    "angular-ui-layout": "~0.0.1",
+    "angular-cookies": "1.2.26",
+    "trNgGrid": "~3.0.3",
+    "angular-ui-router": "~0.2.12",
+    "angular-sanitize": "1.2.26",
+    "ng-file-upload": "~1.6.12"
+  },
+  "resolutions": {
+    "jquery": "1.9.1",
+    "bootstrap": "~3.2.0"
+  },
+  "overrides": {
+    "jquery": {
+      "main": "./jquery.js"
+    }
+  }
+}
