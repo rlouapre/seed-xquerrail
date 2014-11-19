@@ -1,0 +1,10 @@
+<config xmlns="http://xquerrail.com/config" xmlns:engine="http://xquerrail.com/engine">
+  <engines>
+    <engine namespace="http://xquerrail.com/engine/html"/>
+    <engine namespace="http://xquerrail.com/engine/json"/>
+    <engine namespace="http://xquerrail.com/engine/xml"/>
+  </engines>
+  <extensions>
+    <engine namespace="http://xquerrail.com/engine/html/ng"/>
+  </extensions>
+</config>
